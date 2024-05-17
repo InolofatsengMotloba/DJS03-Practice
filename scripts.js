@@ -126,21 +126,21 @@ setPreferredTheme();
 
 // Updating the UI and handling user interactions on the webpage
 // Update Show More Button Text and Disable Logic
-document.querySelector("[data-list-button]").innerText = `Show more (${
-  books.length - BOOKS_PER_PAGE
-})`;
-document.querySelector("[data-list-button]").enabled =
-  matches.length - page * BOOKS_PER_PAGE > 0;
-
-// Update Show More Button HTML
-document.querySelector("[data-list-button]").innerHTML = `
+function updateShowMoreButton() {
+  const end = (page + 1) * BOOKS_PER_PAGE;
+  const remaining = matches.length - end;
+  document.querySelector("[data-list-button]").disabled = remaining <= 0;
+  document.querySelector("[data-list-button]").innerHTML = `
     <span>Show more</span>
-    <span class="list__remaining"> (${
-      matches.length - page * BOOKS_PER_PAGE > 0
-        ? matches.length - page * BOOKS_PER_PAGE
-        : 0
-    })</span>
-`;
+        <span class="list__remaining"> (${
+          matches.length - page * BOOKS_PER_PAGE > 0
+            ? matches.length - page * BOOKS_PER_PAGE
+            : 0
+        })</span>
+    `;
+}
+
+updateShowMoreButton()
 
 // Add event listener for search overlay cancel button
 document.querySelector("[data-search-cancel]").addEventListener("click", () => {
