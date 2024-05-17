@@ -372,46 +372,42 @@ previewBookDetails();
 
 
 // Add event listener to the list items container
-document
-  .querySelector("[data-list-items]")
-  .addEventListener("click", (event) => {
-    // Convert event.path or event.composedPath() to an array for compatibility
-    const pathArray = Array.from(event.path || event.composedPath());
+// Function to handle click event on list items
+function handleListItemClick(event) {
+  const clickedBook = findClickedBook(event); // Find the clicked book details
+  if (clickedBook) {
+    openModalWithBookDetails(clickedBook); // Open modal with book details
+    updateModalContent(clickedBook); // Update modal content with book details
+  }
+}
 
-    // Initialize variable to hold the clicked book details
-    let active = null;
+// Function to find the clicked book details
+function findClickedBook(event) {
+  const pathArray = Array.from(event.path || event.composedPath()); // Convert event.path or event.composedPath() to an array for compatibility
 
-    // Iterate through the pathArray to find the clicked book
-    for (const node of pathArray) {
-      if (active) break;
-
-      // Check if the clicked element has a 'data-preview' attribute
-      if (node?.dataset?.preview) {
-        let result = null;
-
-        // Find the book in the 'books' array using its id
-        for (const singleBook of books) {
-          if (result) break;
-          if (singleBook.id === node?.dataset?.preview) result = singleBook;
-        }
-
-        active = result; // Set the clicked book details
-      }
+  for (const node of pathArray) {
+    if (node?.dataset?.preview) {
+      return books.find(book => book.id === node.dataset.preview); // Find the clicked book in the 'books' array using its id
     }
+  }
 
-    // If a book is clicked
-    if (active) {
-      // Open the modal or overlay to display book details
-      document.querySelector("[data-list-active]").open = true;
+  return null;
+}
 
-      // Update modal content with book details
-      document.querySelector("[data-list-blur]").src = active.image;
-      document.querySelector("[data-list-image]").src = active.image;
-      document.querySelector("[data-list-title]").innerText = active.title;
-      document.querySelector("[data-list-subtitle]").innerText = `${
-        authors[active.author]
-      } (${new Date(active.published).getFullYear()})`;
-      document.querySelector("[data-list-description]").innerText =
-        active.description;
-    }
-  });
+// Function to open modal with book details
+function openModalWithBookDetails() {
+  document.querySelector("[data-list-active]").open = true; // Open the modal or overlay to display book details
+}
+
+// Function to update modal content with book details
+function updateModalContent(book) {
+  const { image, title, author, published, description } = book;
+  document.querySelector("[data-list-blur]").src = image;
+  document.querySelector("[data-list-image]").src = image;
+  document.querySelector("[data-list-title]").innerText = title;
+  document.querySelector("[data-list-subtitle]").innerText = `${authors[author]} (${new Date(published).getFullYear()})`;
+  document.querySelector("[data-list-description]").innerText = description;
+}
+
+// Call the function to handle click event on list items
+document.querySelector("[data-list-items]").addEventListener("click", handleListItemClick);
