@@ -180,10 +180,10 @@ function toggleOverlay(selector, isOpen) {
 addEventListeners();
 
 
-// Add event listener for form submission on the settings form
-document
-  .querySelector("[data-settings-form]")
-  .addEventListener("submit", (event) => {
+// Function to handle form submission on the settings form
+function handleSettingsFormSubmission() {
+  // Add event listener for form submission on the settings form
+  document.querySelector("[data-settings-form]").addEventListener("submit", event => {
     // Prevent the default form submission behavior which causes page reload
     event.preventDefault();
 
@@ -193,26 +193,28 @@ document
     // Convert form data to object and extract the 'theme' field value
     const { theme } = Object.fromEntries(formData);
 
-    // Check the selected theme
-    if (theme === "night") {
-      // If night theme is selected, set dark color variables to light values
-      document.documentElement.style.setProperty(
-        "--color-dark",
-        "255, 255, 255"
-      );
-      document.documentElement.style.setProperty("--color-light", "10, 10, 20");
-    } else {
-      // If day theme is selected, set dark color variables to dark values
-      document.documentElement.style.setProperty("--color-dark", "10, 10, 20");
-      document.documentElement.style.setProperty(
-        "--color-light",
-        "255, 255, 255"
-      );
-    }
+    // Update color variables based on the selected theme
+    updateColorVariables(theme);
 
     // Close the settings overlay after form submission
-    document.querySelector("[data-settings-overlay]").open = false;
+    toggleOverlay("[data-settings-overlay]", false);
   });
+}
+
+// Function to update color variables based on the selected theme
+function updateColorVariables(theme) {
+  // Define color values based on the selected theme
+  const darkColor = theme === "night" ? "255, 255, 255" : "10, 10, 20";
+  const lightColor = theme === "night" ? "10, 10, 20" : "255, 255, 255";
+
+  // Update color variables in the document
+  document.documentElement.style.setProperty("--color-dark", darkColor);
+  document.documentElement.style.setProperty("--color-light", lightColor);
+}
+
+// Call the function to handle form submission on the settings form
+handleSettingsFormSubmission();
+
 
 // Add event listener for form submission on the search form
 document
