@@ -3,7 +3,7 @@ import { books, authors, genres, BOOKS_PER_PAGE } from "./data.js";
 let page = 1;
 let matches = books;
 
-function createElement(tag, className, attributes = {}, innerHTML = '') {
+function createElement(tag, className, attributes = {}, innerHTML = "") {
   const element = document.createElement(tag);
   element.className = className;
 
@@ -24,14 +24,14 @@ function createPreviewButton({ id, image, title, author }) {
     </div>
   `;
 
-  return createElement('button', 'preview', { 'data-preview': id }, innerHTML);
+  return createElement("button", "preview", { "data-preview": id }, innerHTML);
 }
 
 function appendElementsToContainer(containerSelector, elements) {
   const container = document.querySelector(containerSelector);
   const fragment = document.createDocumentFragment();
 
-  elements.forEach(element => fragment.appendChild(element));
+  elements.forEach((element) => fragment.appendChild(element));
   container.appendChild(fragment);
 }
 
@@ -41,8 +41,7 @@ function generatePreviews(matches, limit, containerSelector) {
 }
 
 // Usage
-generatePreviews(matches, BOOKS_PER_PAGE, '[data-list-items]');
-
+generatePreviews(matches, BOOKS_PER_PAGE, "[data-list-items]");
 
 // Function to create an option element
 function createOptionElement(value, text) {
@@ -54,28 +53,29 @@ function createOptionElement(value, text) {
 
 // Function to append options to a document fragment
 function appendOptionsToFragment(fragment, options) {
-  options.forEach(option => fragment.appendChild(option));
+  options.forEach((option) => fragment.appendChild(option));
 }
 
 // Function to generate genre options and append to the dropdown menu
 function generateGenreOptions() {
   const fragment = document.createDocumentFragment();
-  
+
   // Create and append the "All Genres" option
   const allGenresOption = createOptionElement("any", "All Genres");
   fragment.appendChild(allGenresOption);
-  
+
   // Create and append options for each genre
-  const genreOptions = Object.entries(genres).map(([id, name]) => createOptionElement(id, name));
+  const genreOptions = Object.entries(genres).map(([id, name]) =>
+    createOptionElement(id, name)
+  );
   appendOptionsToFragment(fragment, genreOptions);
-  
+
   // Append the document fragment to the dropdown menu in the DOM
   document.querySelector("[data-search-genres]").appendChild(fragment);
 }
 
 // Usage
 generateGenreOptions();
-
 
 // Create a document fragment to hold generated author options
 const authorsHtml = document.createDocumentFragment();
@@ -112,7 +112,9 @@ function applyTheme(theme, darkColor, lightColor) {
 
 // Function to determine and set the preferred theme
 function setPreferredTheme() {
-  const prefersDarkScheme = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const prefersDarkScheme =
+    window.matchMedia &&
+    window.matchMedia("(prefers-color-scheme: dark)").matches;
   if (prefersDarkScheme) {
     applyTheme("night", "255, 255, 255", "10, 10, 20");
   } else {
@@ -122,7 +124,6 @@ function setPreferredTheme() {
 
 // Usage
 setPreferredTheme();
-
 
 // Updating the UI and handling user interactions on the webpage
 // Update Show More Button Text and Disable Logic
@@ -140,30 +141,38 @@ function updateShowMoreButton() {
     `;
 }
 
-updateShowMoreButton()
+updateShowMoreButton();
 
 // Function to add event listeners for various elements
 function addEventListeners() {
   // Search overlay cancel button
-  document.querySelector("[data-search-cancel]").addEventListener("click", () => {
-    toggleOverlay("[data-search-overlay]", false);
-  });
+  document
+    .querySelector("[data-search-cancel]")
+    .addEventListener("click", () => {
+      toggleOverlay("[data-search-overlay]", false);
+    });
 
   // Settings overlay cancel button
-  document.querySelector("[data-settings-cancel]").addEventListener("click", () => {
-    toggleOverlay("[data-settings-overlay]", false);
-  });
+  document
+    .querySelector("[data-settings-cancel]")
+    .addEventListener("click", () => {
+      toggleOverlay("[data-settings-overlay]", false);
+    });
 
   // Header search button
-  document.querySelector("[data-header-search]").addEventListener("click", () => {
-    toggleOverlay("[data-search-overlay]", true);
-    document.querySelector("[data-search-title]").focus();
-  });
+  document
+    .querySelector("[data-header-search]")
+    .addEventListener("click", () => {
+      toggleOverlay("[data-search-overlay]", true);
+      document.querySelector("[data-search-title]").focus();
+    });
 
   // Header settings button
-  document.querySelector("[data-header-settings]").addEventListener("click", () => {
-    toggleOverlay("[data-settings-overlay]", true);
-  });
+  document
+    .querySelector("[data-header-settings]")
+    .addEventListener("click", () => {
+      toggleOverlay("[data-settings-overlay]", true);
+    });
 
   // List close button
   document.querySelector("[data-list-close]").addEventListener("click", () => {
@@ -179,26 +188,27 @@ function toggleOverlay(selector, isOpen) {
 // Call the function to add event listeners
 addEventListeners();
 
-
 // Function to handle form submission on the settings form
 function handleSettingsFormSubmission() {
   // Add event listener for form submission on the settings form
-  document.querySelector("[data-settings-form]").addEventListener("submit", event => {
-    // Prevent the default form submission behavior which causes page reload
-    event.preventDefault();
+  document
+    .querySelector("[data-settings-form]")
+    .addEventListener("submit", (event) => {
+      // Prevent the default form submission behavior which causes page reload
+      event.preventDefault();
 
-    // Extract form data
-    const formData = new FormData(event.target);
+      // Extract form data
+      const formData = new FormData(event.target);
 
-    // Convert form data to object and extract the 'theme' field value
-    const { theme } = Object.fromEntries(formData);
+      // Convert form data to object and extract the 'theme' field value
+      const { theme } = Object.fromEntries(formData);
 
-    // Update color variables based on the selected theme
-    updateColorVariables(theme);
+      // Update color variables based on the selected theme
+      updateColorVariables(theme);
 
-    // Close the settings overlay after form submission
-    toggleOverlay("[data-settings-overlay]", false);
-  });
+      // Close the settings overlay after form submission
+      toggleOverlay("[data-settings-overlay]", false);
+    });
 }
 
 // Function to update color variables based on the selected theme
@@ -214,7 +224,6 @@ function updateColorVariables(theme) {
 
 // Call the function to handle form submission on the settings form
 handleSettingsFormSubmission();
-
 
 // Add event listener for form submission on the search form
 document
@@ -283,15 +292,15 @@ document
 
       // Fill in the HTML for the list item
       element.innerHTML = `
-            <img
-                class="preview__image"
-                src="${image}"
-            />
-            
-            <div class="preview__info">
-                <h3 class="preview__title">${title}</h3>
-                <div class="preview__author">${authors[author]}</div>
-            </div>
+          <img
+              class="preview__image"
+              src="${image}"
+          />
+          
+          <div class="preview__info">
+              <h3 class="preview__title">${title}</h3>
+              <div class="preview__author">${authors[author]}</div>
+          </div>
         `;
 
       newItems.appendChild(element); // Append the new list item to the fragment
@@ -304,12 +313,12 @@ document
     document.querySelector("[data-list-button]").disabled =
       matches.length - page * BOOKS_PER_PAGE < 1;
     document.querySelector("[data-list-button]").innerHTML = `
-        <span>Show more</span>
-        <span class="list__remaining"> (${
-          matches.length - page * BOOKS_PER_PAGE > 0
-            ? matches.length - page * BOOKS_PER_PAGE
-            : 0
-        })</span>
+      <span>Show more</span>
+      <span class="list__remaining"> (${
+        matches.length - page * BOOKS_PER_PAGE > 0
+          ? matches.length - page * BOOKS_PER_PAGE
+          : 0
+      })</span>
     `;
 
     // Scroll to the top of the page
@@ -334,7 +343,10 @@ function createBookPreviewsFragment() {
   const startIndex = page * BOOKS_PER_PAGE;
   const endIndex = (page + 1) * BOOKS_PER_PAGE;
 
-  for (const { author, id, image, title } of matches.slice(startIndex, endIndex)) {
+  for (const { author, id, image, title } of matches.slice(
+    startIndex,
+    endIndex
+  )) {
     const element = createPreviewButtonElement({ id, image, title, author }); // Create a button element for each book preview
     fragment.appendChild(element); // Append the book preview element to the fragment
   }
@@ -370,7 +382,6 @@ function incrementPage() {
 // Call the function to handle click event on the preview button
 previewBookDetails();
 
-
 // Add event listener to the list items container
 // Function to handle click event on list items
 function handleListItemClick(event) {
@@ -387,7 +398,7 @@ function findClickedBook(event) {
 
   for (const node of pathArray) {
     if (node?.dataset?.preview) {
-      return books.find(book => book.id === node.dataset.preview); // Find the clicked book in the 'books' array using its id
+      return books.find((book) => book.id === node.dataset.preview); // Find the clicked book in the 'books' array using its id
     }
   }
 
@@ -405,9 +416,13 @@ function updateModalContent(book) {
   document.querySelector("[data-list-blur]").src = image;
   document.querySelector("[data-list-image]").src = image;
   document.querySelector("[data-list-title]").innerText = title;
-  document.querySelector("[data-list-subtitle]").innerText = `${authors[author]} (${new Date(published).getFullYear()})`;
+  document.querySelector("[data-list-subtitle]").innerText = `${
+    authors[author]
+  } (${new Date(published).getFullYear()})`;
   document.querySelector("[data-list-description]").innerText = description;
 }
 
 // Call the function to handle click event on list items
-document.querySelector("[data-list-items]").addEventListener("click", handleListItemClick);
+document
+  .querySelector("[data-list-items]")
+  .addEventListener("click", handleListItemClick);
