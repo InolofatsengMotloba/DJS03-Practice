@@ -103,19 +103,26 @@ for (const [id, name] of Object.entries(authors)) {
 // Append the generated author options to the dropdown menu in the DOM
 document.querySelector("[data-search-authors]").appendChild(authorsHtml);
 
-// Check if the browser supports the matchMedia method and if the user prefers dark mode
-if (
-  window.matchMedia &&
-  window.matchMedia("(prefers-color-scheme: dark)").matches
-) {
-  document.querySelector("[data-settings-theme]").value = "night";
-  document.documentElement.style.setProperty("--color-dark", "255, 255, 255");
-  document.documentElement.style.setProperty("--color-light", "10, 10, 20");
-} else {
-  document.querySelector("[data-settings-theme]").value = "day";
-  document.documentElement.style.setProperty("--color-dark", "10, 10, 20");
-  document.documentElement.style.setProperty("--color-light", "255, 255, 255");
+// Function to apply theme settings
+function applyTheme(theme, darkColor, lightColor) {
+  document.querySelector("[data-settings-theme]").value = theme;
+  document.documentElement.style.setProperty("--color-dark", darkColor);
+  document.documentElement.style.setProperty("--color-light", lightColor);
 }
+
+// Function to determine and set the preferred theme
+function setPreferredTheme() {
+  const prefersDarkScheme = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+  if (prefersDarkScheme) {
+    applyTheme("night", "255, 255, 255", "10, 10, 20");
+  } else {
+    applyTheme("day", "10, 10, 20", "255, 255, 255");
+  }
+}
+
+// Usage
+setPreferredTheme();
+
 
 // Updating the UI and handling user interactions on the webpage
 // Update Show More Button Text and Disable Logic
