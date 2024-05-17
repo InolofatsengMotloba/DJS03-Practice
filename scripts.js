@@ -44,31 +44,38 @@ function generatePreviews(matches, limit, containerSelector) {
 generatePreviews(matches, BOOKS_PER_PAGE, '[data-list-items]');
 
 
-// Create a document fragment to hold generated genre options
-const genreHtml = document.createDocumentFragment();
-
-// Create the first option element representing "All Genres"
-const firstGenreElement = document.createElement("option");
-firstGenreElement.value = "any"; // Set value attribute to 'any'
-firstGenreElement.innerText = "All Genres"; // Set text content to 'All Genres'
-
-// Append the first option to the document fragment
-genreHtml.appendChild(firstGenreElement);
-
-// Loop through each genre in the 'genres' object
-for (const [id, name] of Object.entries(genres)) {
-  // Create an option element for each genre
-  const element = document.createElement("option");
-  // Set the value attribute to the genre's id
-  element.value = id;
-  // Set the text content to the genre's name
-  element.innerText = name;
-  // Append the genre option to the document fragment
-  genreHtml.appendChild(element);
+// Function to create an option element
+function createOptionElement(value, text) {
+  const option = document.createElement("option");
+  option.value = value;
+  option.innerText = text;
+  return option;
 }
 
-// Append the generated genre options to the dropdown menu in the DOM
-document.querySelector("[data-search-genres]").appendChild(genreHtml);
+// Function to append options to a document fragment
+function appendOptionsToFragment(fragment, options) {
+  options.forEach(option => fragment.appendChild(option));
+}
+
+// Function to generate genre options and append to the dropdown menu
+function generateGenreOptions() {
+  const fragment = document.createDocumentFragment();
+  
+  // Create and append the "All Genres" option
+  const allGenresOption = createOptionElement("any", "All Genres");
+  fragment.appendChild(allGenresOption);
+  
+  // Create and append options for each genre
+  const genreOptions = Object.entries(genres).map(([id, name]) => createOptionElement(id, name));
+  appendOptionsToFragment(fragment, genreOptions);
+  
+  // Append the document fragment to the dropdown menu in the DOM
+  document.querySelector("[data-search-genres]").appendChild(fragment);
+}
+
+// Usage
+generateGenreOptions();
+
 
 // Create a document fragment to hold generated author options
 const authorsHtml = document.createDocumentFragment();
