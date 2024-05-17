@@ -142,35 +142,43 @@ function updateShowMoreButton() {
 
 updateShowMoreButton()
 
-// Add event listener for search overlay cancel button
-document.querySelector("[data-search-cancel]").addEventListener("click", () => {
-  document.querySelector("[data-search-overlay]").open = false;
-});
-
-// Add event listener for settings overlay cancel button
-document
-  .querySelector("[data-settings-cancel]")
-  .addEventListener("click", () => {
-    document.querySelector("[data-settings-overlay]").open = false;
+// Function to add event listeners for various elements
+function addEventListeners() {
+  // Search overlay cancel button
+  document.querySelector("[data-search-cancel]").addEventListener("click", () => {
+    toggleOverlay("[data-search-overlay]", false);
   });
 
-// Add event listener for header search button
-document.querySelector("[data-header-search]").addEventListener("click", () => {
-  document.querySelector("[data-search-overlay]").open = true;
-  document.querySelector("[data-search-title]").focus();
-});
-
-// Add event listener for header settings button
-document
-  .querySelector("[data-header-settings]")
-  .addEventListener("click", () => {
-    document.querySelector("[data-settings-overlay]").open = true;
+  // Settings overlay cancel button
+  document.querySelector("[data-settings-cancel]").addEventListener("click", () => {
+    toggleOverlay("[data-settings-overlay]", false);
   });
 
-// Add event listener for list close button
-document.querySelector("[data-list-close]").addEventListener("click", () => {
-  document.querySelector("[data-list-active]").open = false;
-});
+  // Header search button
+  document.querySelector("[data-header-search]").addEventListener("click", () => {
+    toggleOverlay("[data-search-overlay]", true);
+    document.querySelector("[data-search-title]").focus();
+  });
+
+  // Header settings button
+  document.querySelector("[data-header-settings]").addEventListener("click", () => {
+    toggleOverlay("[data-settings-overlay]", true);
+  });
+
+  // List close button
+  document.querySelector("[data-list-close]").addEventListener("click", () => {
+    toggleOverlay("[data-list-active]", false);
+  });
+}
+
+// Function to toggle overlay visibility
+function toggleOverlay(selector, isOpen) {
+  document.querySelector(selector).open = isOpen;
+}
+
+// Call the function to add event listeners
+addEventListeners();
+
 
 // Add event listener for form submission on the settings form
 document
