@@ -3,39 +3,46 @@ import { books, authors, genres, BOOKS_PER_PAGE } from "./data.js";
 let page = 1;
 let matches = books;
 
-// Create a document fragment to hold generated elements
-const starting = document.createDocumentFragment();
+function createElement(tag, className, attributes = {}, innerHTML = '') {
+  const element = document.createElement(tag);
+  element.className = className;
 
-// Loop through a subset of 'matches' array
-for (const { author, id, image, title } of matches.slice(0, BOOKS_PER_PAGE)) {
-  // Create a button element
-  const element = document.createElement("button");
+  for (const [key, value] of Object.entries(attributes)) {
+    element.setAttribute(key, value);
+  }
 
-  // Set the class of the button to 'preview'
-  element.classList = "preview";
-
-  // Set a custom data attribute 'data-preview' to the button
-  element.setAttribute("data-preview", id);
-
-  // Generate inner HTML for the button
-  element.innerHTML = `
-        <img
-            class="preview__image"
-            src="${image}"
-        />
-        
-        <div class="preview__info">
-            <h3 class="preview__title">${title}</h3>
-            <div class="preview__author">${authors[author]}</div>
-        </div>
-    `;
-
-  // Append the button to the document fragment
-  starting.appendChild(element);
+  element.innerHTML = innerHTML;
+  return element;
 }
 
-// Append the document fragment to the specified container in the DOM
-document.querySelector("[data-list-items]").appendChild(starting);
+function createPreviewButton({ id, image, title, author }) {
+  const innerHTML = `
+    <img class="preview__image" src="${image}" />
+    <div class="preview__info">
+        <h3 class="preview__title">${title}</h3>
+        <div class="preview__author">${authors[author]}</div>
+    </div>
+  `;
+
+  return createElement('button', 'preview', { 'data-preview': id }, innerHTML);
+}
+
+function appendElementsToContainer(containerSelector, elements) {
+  const container = document.querySelector(containerSelector);
+  const fragment = document.createDocumentFragment();
+
+  elements.forEach(element => fragment.appendChild(element));
+  container.appendChild(fragment);
+}
+
+function generatePreviews(matches, limit, containerSelector) {
+  const elements = matches.slice(0, limit).map(createPreviewButton);
+  appendElementsToContainer(containerSelector, elements);
+}
+
+// Usage
+generatePreviews(matches, BOOKS_PER_PAGE, '[data-list-items]');
+
 
 // Create a document fragment to hold generated genre options
 const genreHtml = document.createDocumentFragment();
@@ -108,7 +115,7 @@ if (
 document.querySelector("[data-list-button]").innerText = `Show more (${
   books.length - BOOKS_PER_PAGE
 })`;
-document.querySelector("[data-list-button]").disabled =
+document.querySelector("[data-list-button]").enabled =
   matches.length - page * BOOKS_PER_PAGE > 0;
 
 // Update Show More Button HTML
