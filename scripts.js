@@ -319,43 +319,57 @@ document
     document.querySelector("[data-search-overlay]").open = false;
   });
 
-// Add event listener for click on the "Show more" button
-document.querySelector("[data-list-button]").addEventListener("click", () => {
-  // Create a document fragment to hold the newly created elements
+// Function to handle click event on the preview button
+function previewBookDetails() {
+  document.querySelector("[data-list-button]").addEventListener("click", () => {
+    const fragment = createBookPreviewsFragment(); // Create a fragment containing book previews for the next page
+    appendBookPreviews(fragment); // Append the fragment to the list container
+    incrementPage(); // Increment the 'page' variable to load the next page of book previews
+  });
+}
+
+// Function to create a fragment containing book previews for the next page
+function createBookPreviewsFragment() {
   const fragment = document.createDocumentFragment();
+  const startIndex = page * BOOKS_PER_PAGE;
+  const endIndex = (page + 1) * BOOKS_PER_PAGE;
 
-  // Loop through a portion of the 'matches' array to create book previews for the next page
-  for (const { author, id, image, title } of matches.slice(
-    page * BOOKS_PER_PAGE,
-    (page + 1) * BOOKS_PER_PAGE
-  )) {
-    // Create a button element for each book preview
-    const element = document.createElement("button");
-    element.classList = "preview";
-    element.setAttribute("data-preview", id);
-
-    // Fill in the HTML for the book preview
-    element.innerHTML = `
-            <img
-                class="preview__image"
-                src="${image}"
-            />
-            
-            <div class="preview__info">
-                <h3 class="preview__title">${title}</h3>
-                <div class="preview__author">${authors[author]}</div>
-            </div>
-        `;
-
-    // Append the newly created book preview element to the fragment
-    fragment.appendChild(element);
+  for (const { author, id, image, title } of matches.slice(startIndex, endIndex)) {
+    const element = createPreviewButtonElement({ id, image, title, author }); // Create a button element for each book preview
+    fragment.appendChild(element); // Append the book preview element to the fragment
   }
 
-  // Append the fragment containing the new book previews to the list container
+  return fragment;
+}
+
+// Function to create a button element for a book preview
+function createPreviewButtonElement({ id, image, title, author }) {
+  const element = document.createElement("button");
+  element.classList = "preview";
+  element.setAttribute("data-preview", id);
+  element.innerHTML = `
+    <img class="preview__image" src="${image}" />
+    <div class="preview__info">
+        <h3 class="preview__title">${title}</h3>
+        <div class="preview__author">${authors[author]}</div>
+    </div>
+  `;
+  return element;
+}
+
+// Function to append book previews fragment to the list container
+function appendBookPreviews(fragment) {
   document.querySelector("[data-list-items]").appendChild(fragment);
-  // Increment the 'page' variable to load the next page of book previews next time the button is clicked
+}
+
+// Function to increment the 'page' variable
+function incrementPage() {
   page += 1;
-});
+}
+
+// Call the function to handle click event on the preview button
+previewBookDetails();
+
 
 // Add event listener to the list items container
 document
